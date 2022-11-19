@@ -31,11 +31,12 @@ const MyAppointments = () => {
           </thead>
           <tbody>
             {bookings.map((booking, i) => (
-              <tr>
-                <th>{i}</th>
-                <td>Cy Ganderton</td>
-                <td>Quality Control Specialist</td>
-                <td>Blue</td>
+              <tr key={booking._id}>
+                <th>{i + 1}</th>
+                <td>{booking.patient}</td>
+                <td>{booking.treatment}</td>
+                <td>{booking.appointmentDate}</td>
+                <td>{booking.slot}</td>
               </tr>
             ))}
           </tbody>
