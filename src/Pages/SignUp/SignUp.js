@@ -1,3 +1,4 @@
+import { da } from "date-fns/locale";
 import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -26,7 +27,7 @@ const SignUp = () => {
         };
         updateUser(userInfo)
           .then(() => {
-            navigate("/");
+            saveUser(data.email, data.password);
           })
           .catch((err) => console.log(err));
       })
@@ -34,6 +35,19 @@ const SignUp = () => {
         console.log(error);
         setSignUPError(error.message);
       });
+    const saveUser = (email, password) => {
+      const user = { email, password };
+      fetch("http://localhost:5000/users", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(user),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          navigate("/");
+        });
+    };
   };
 
   return (
