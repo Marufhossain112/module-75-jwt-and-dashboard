@@ -32,7 +32,7 @@ const SignUp = () => {
         };
         updateUser(userInfo)
           .then(() => {
-            saveUser(data.email, data.password);
+            saveUser(data.email, data.name);
           })
           .catch((err) => console.log(err));
       })
@@ -40,8 +40,8 @@ const SignUp = () => {
         console.log(error);
         setSignUPError(error.message);
       });
-    const saveUser = (email, password) => {
-      const user = { email, password };
+    const saveUser = (email, name) => {
+      const user = { email, name };
       fetch("http://localhost:5000/users", {
         method: "POST",
         headers: { "content-type": "application/json" },
