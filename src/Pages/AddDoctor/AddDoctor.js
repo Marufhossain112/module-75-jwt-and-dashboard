@@ -1,6 +1,9 @@
+import { async } from "@firebase/util";
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import Loading from "../Shared/Loading/Loading";
 const AddDoctor = () => {
   const {
     register,
@@ -10,6 +13,18 @@ const AddDoctor = () => {
   const handleAddDoctor = (data) => {
     console.log(data);
   };
+  const { data: appointmentsData, isLoading } = useQuery({
+    queryKey: ["appointmentsSpecialty"],
+    queryFn: async () => {
+      const res = await fetch("http://localhost:5000/appointmentsSpecialty");
+      const data = await res.json();
+      return data;
+    },
+  });
+  console.log(appointmentsData);
+  if (isLoading) {
+    return <Loading></Loading>;
+  }
   return (
     <div>
       <div className="w-96 p-7">
@@ -56,8 +71,11 @@ const AddDoctor = () => {
               <option disabled selected>
                 Pick a specialty
               </option>
-              <option>Han Solo</option>
-              <option>Greedo</option>
+              {appointmentsData.map((specialty) => (
+                <option key={specialty._id} value={specialty.name}>
+                  {specialty.name}
+                </option>
+              ))}
             </select>
           </div>
           <input
