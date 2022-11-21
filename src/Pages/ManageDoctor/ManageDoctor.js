@@ -70,6 +70,7 @@ const ManageDoctor = () => {
         <ConfirmationModal
           successAction={() => handleDeleteDoctor(deletingDoctor)}
           // modalData={deletingDoctor}
+          successButton="Delete"
           closeModal={closeModal}
         ></ConfirmationModal>
       )}

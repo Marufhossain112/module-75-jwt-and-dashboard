@@ -1,6 +1,6 @@
 import React from "react";
 
-const ConfirmationModal = ({ closeModal, successAction, modalData }) => {
+const ConfirmationModal = ({ closeModal, successAction, successButton }) => {
   return (
     <div>
       <input type="checkbox" id="confirmation-modal" className="modal-toggle" />
@@ -15,11 +15,11 @@ const ConfirmationModal = ({ closeModal, successAction, modalData }) => {
           </p>
           <div className="modal-action">
             <label
-              onClick={ successAction}
+              onClick={successAction}
               htmlFor="confirmation-modal"
-              className="btn"
+              className="btn btn-primary"
             >
-              Yay!
+              {successButton}
             </label>
             <label
               onClick={closeModal}
