@@ -36,7 +36,7 @@ const AddDoctor = () => {
           fetch("http://localhost:5000/doctor", {
             method: "POST",
             headers: {
-              "content-type": "application/json",
+              authorization: `bearer ${localStorage.getItem("token")}`,
             },
             body: JSON.stringify(doctor),
           })
