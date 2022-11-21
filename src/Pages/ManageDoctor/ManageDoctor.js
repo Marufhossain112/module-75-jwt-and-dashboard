@@ -7,6 +7,9 @@ const ManageDoctor = () => {
   const closeModal = () => {
     setDeletingDoctor(null);
   };
+  const handleDeleteDoctor = (doctor) => {
+    console.log(doctor);
+  };
 
   const { data: manageDoctorData = [] } = useQuery({
     queryKey: ["doctor"],
@@ -64,7 +67,11 @@ const ManageDoctor = () => {
         </table>
       </div>
       {deletingDoctor && (
-        <ConfirmationModal closeModal={closeModal}></ConfirmationModal>
+        <ConfirmationModal
+          successAction={() => handleDeleteDoctor(deletingDoctor)}
+          // modalData={deletingDoctor}
+          closeModal={closeModal}
+        ></ConfirmationModal>
       )}
     </div>
   );
