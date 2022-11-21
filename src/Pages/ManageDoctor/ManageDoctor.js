@@ -1,11 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
+import React, { useState } from "react";
+import ConfirmationModal from "../../components/ConfirmationModal/ConfirmationModal";
 
 const ManageDoctor = () => {
+  const [deletingDoctor, setDeletingDoctor] = useState(null);
   const { data: manageDoctorData = [] } = useQuery({
     queryKey: ["doctor"],
     queryFn: async () => {
-      const res = await fetch("http://localhost:5000/doctor");
+      const res = await fetch("http://localhost:5000/doctor", {
+        headers: {
+          authorization: `bearer ${localStorage.getItem("token")}`,
+        },
+      });
       const data = await res.json();
       return data;
     },
@@ -38,12 +44,22 @@ const ManageDoctor = () => {
                   </div>
                 </td>
                 <td>{doctor.email}</td>
-                <td>{<button className="btn btn-sm">Delete</button>}</td>
+                <td>
+                  {" "}
+                  <label
+                    onClick={() => setDeletingDoctor(doctor)}
+                    htmlFor="confirmation-modal"
+                    className="btn btn-sm"
+                  >
+                    Delete
+                  </label>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      {deletingDoctor && <ConfirmationModal></ConfirmationModal>}
     </div>
   );
 };
