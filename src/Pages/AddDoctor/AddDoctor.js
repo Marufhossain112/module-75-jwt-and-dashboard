@@ -1,17 +1,33 @@
-import { async } from "@firebase/util";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import Loading from "../Shared/Loading/Loading";
 const AddDoctor = () => {
+  const imageHostKey = process.env.REACT_APP_imagbb_api;
+  // console.log(imageHostKey);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
   const handleAddDoctor = (data) => {
-    console.log(data);
+    const image = data.image[0];
+    // console.log(image);
+    const formData = new FormData();
+    formData.append("image", image);
+    const url = `https://api.imgbb.com/1/upload?expiration=600&key=${imageHostKey}`;
+    fetch(url, {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((imgData) => {
+        if (imgData.success) {
+          console.log(imgData.data.url);
+        }
+      });
   };
   const { data: appointmentsData, isLoading } = useQuery({
     queryKey: ["appointmentsSpecialty"],
@@ -21,7 +37,7 @@ const AddDoctor = () => {
       return data;
     },
   });
-  console.log(appointmentsData);
+  // console.log(appointmentsData);
   if (isLoading) {
     return <Loading></Loading>;
   }
@@ -90,7 +106,7 @@ const AddDoctor = () => {
             </label>
             <input
               type="file"
-              {...register("img", {
+              {...register("image", {
                 required: "img is Required",
               })}
               className="input input-bordered w-full max-w-xs"
@@ -101,7 +117,7 @@ const AddDoctor = () => {
           </div>
           <input
             className="btn btn-accent w-full mt-4"
-            value="Sign Up"
+            value="Add Doctor"
             type="submit"
           />
           {/* {signUpError && <p className="text-red-600">{signUpError}</p>} */}
