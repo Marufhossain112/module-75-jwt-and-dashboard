@@ -4,6 +4,10 @@ import ConfirmationModal from "../../components/ConfirmationModal/ConfirmationMo
 
 const ManageDoctor = () => {
   const [deletingDoctor, setDeletingDoctor] = useState(null);
+  const closeModal = () => {
+    setDeletingDoctor(null);
+  };
+
   const { data: manageDoctorData = [] } = useQuery({
     queryKey: ["doctor"],
     queryFn: async () => {
@@ -16,7 +20,7 @@ const ManageDoctor = () => {
       return data;
     },
   });
-  console.log(manageDoctorData);
+  // console.log(manageDoctorData);
   return (
     <div>
       <h2 className="text-3xl">Manage Doctor</h2>
@@ -59,7 +63,9 @@ const ManageDoctor = () => {
           </tbody>
         </table>
       </div>
-      {deletingDoctor && <ConfirmationModal></ConfirmationModal>}
+      {deletingDoctor && (
+        <ConfirmationModal closeModal={closeModal}></ConfirmationModal>
+      )}
     </div>
   );
 };
