@@ -1,12 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
 import Loading from "../Shared/Loading/Loading";
 const AddDoctor = () => {
   const imageHostKey = process.env.REACT_APP_imagbb_api;
   // console.log(imageHostKey);
-
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -40,7 +41,12 @@ const AddDoctor = () => {
             body: JSON.stringify(doctor),
           })
             .then((res) => res.json())
-            .then((data) => console.log(data));
+            .then((data) => {
+              if (data.insertedId) {
+                toast.success(`${doctor.name} successfully submitted.`);
+                navigate("/dashboard/manageDoctor");
+              }
+            });
         }
       });
   };
