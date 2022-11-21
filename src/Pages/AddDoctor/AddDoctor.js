@@ -67,7 +67,12 @@ const AddDoctor = () => {
               {" "}
               <span className="label-text">Specialty</span>
             </label>
-            <select className="select select-bordered w-full max-w-xs">
+            <select
+              {...register("specialty", {
+                required: true,
+              })}
+              className="select select-bordered w-full max-w-xs"
+            >
               <option disabled selected>
                 Pick a specialty
               </option>
@@ -77,6 +82,22 @@ const AddDoctor = () => {
                 </option>
               ))}
             </select>
+          </div>
+          <div className="form-control w-full max-w-xs">
+            <label className="label">
+              {" "}
+              <span className="label-text">Upload Image</span>
+            </label>
+            <input
+              type="file"
+              {...register("img", {
+                required: "img is Required",
+              })}
+              className="input input-bordered w-full max-w-xs"
+            />
+            {errors.name && (
+              <p className="text-red-500">{errors.name.message}</p>
+            )}
           </div>
           <input
             className="btn btn-accent w-full mt-4"
