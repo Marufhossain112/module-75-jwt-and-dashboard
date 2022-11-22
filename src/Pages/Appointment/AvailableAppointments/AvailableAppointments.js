@@ -30,6 +30,7 @@ const AvailableAppointments = ({ selectedDate }) => {
   if (isLoading) {
     return <Loading></Loading>;
   }
+  // console.log("treatment", treatment);
 
   return (
     <section className="my-16">
