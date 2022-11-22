@@ -29,7 +29,7 @@ const CheckoutForm = ({ booking }) => {
     } else {
       setErrorMessage("");
     }
-    stripe
+    const { paymentIntent, error: confirmError } = await stripe
       .confirmCardPayment(clientSecret, {
         payment_method: {
           card: card,
