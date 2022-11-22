@@ -10,7 +10,7 @@ const stripePromise = loadStripe(
 
 const Payment = () => {
   const booking = useLoaderData();
-  console.log(booking);
+  // console.log(booking);
   return (
     <div>
       <h2 className="text-3xl">Payment</h2>
