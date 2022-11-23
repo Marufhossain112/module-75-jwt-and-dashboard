@@ -1,5 +1,6 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import React, { useEffect, useState } from "react";
+import { json } from "react-router-dom";
 
 const CheckoutForm = ({ booking }) => {
   const [clientSecret, setClientSecret] = useState("");
@@ -9,7 +10,7 @@ const CheckoutForm = ({ booking }) => {
   const [transecId, setTransecId] = useState("");
   const stripe = useStripe();
   const elements = useElements();
-  const { price, patient, email } = booking;
+  const { price, patient, email, _id } = booking;
   useEffect(() => {
     // Create PaymentIntent as soon as the page loads
     fetch("http://localhost:5000/create-payment-intent", {
@@ -63,9 +64,29 @@ const CheckoutForm = ({ booking }) => {
       return;
     }
     if (paymentIntent.status === "succeeded") {
-      setSuccess("Congratulations ! Your submission is successful.");
-      setTransecId(paymentIntent.id);
-      setProcessing(false);
+      console.log("card info", card);
+      const payment = {
+        price,
+        transectionId: paymentIntent.id,
+        email,
+        bookingId: booking._id,
+      };
+      fetch("http://localhost:5000/payments", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          authorization: `bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(payment),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.insertedId) {
+            setSuccess("Congratulations ! Your submission is successful.");
+            setTransecId(paymentIntent.id);
+            setProcessing(false);
+          }
+        });
     }
   };
 

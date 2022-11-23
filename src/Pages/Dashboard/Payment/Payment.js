@@ -1,7 +1,8 @@
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import React from "react";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigation } from "react-router-dom";
+import Loading from "../../Shared/Loading/Loading";
 import CheckoutForm from "./CheckoutForm";
 const stripePromise = loadStripe(
   "pk_test_51M6sUXGGuleKu5Js1MoQrS6AXlPuL2XREt4GEycGi2pYEgznQwwEhEJlMbfgvnhKP7ue8TiECsUj3UAFxrTkXNge00mlODxGxO"
@@ -11,6 +12,10 @@ const stripePromise = loadStripe(
 const Payment = () => {
   const booking = useLoaderData();
   // console.log(booking);
+  const navigation = useNavigation();
+  if (navigation.state === "loading") {
+    return <Loading></Loading>;
+  }
   return (
     <div>
       <h2 className="text-3xl">Payment</h2>
