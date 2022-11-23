@@ -4,6 +4,9 @@ import React, { useEffect, useState } from "react";
 const CheckoutForm = ({ booking }) => {
   const [clientSecret, setClientSecret] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [success, setSuccess] = useState("");
+  const [processing, setProcessing] = useState("");
+  const [transecId, setTransecId] = useState("");
   const stripe = useStripe();
   const elements = useElements();
   const { price, patient, email } = booking;
@@ -32,6 +35,8 @@ const CheckoutForm = ({ booking }) => {
     if (card == null) {
       return;
     }
+    setSuccess("");
+    setProcessing("true");
     const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: "card",
       card,
@@ -57,7 +62,11 @@ const CheckoutForm = ({ booking }) => {
       setErrorMessage(confirmError.message);
       return;
     }
-    console.log(paymentIntent);
+    if (paymentIntent.status === "succeeded") {
+      setSuccess("Congratulations ! Your submission is successful.");
+      setTransecId(paymentIntent.id);
+      setProcessing(false);
+    }
   };
 
   return (
@@ -82,12 +91,16 @@ const CheckoutForm = ({ booking }) => {
         <button
           className="btn btn-primary"
           type="submit"
-          disabled={!stripe || !clientSecret}
+          disabled={!stripe || !clientSecret || processing}
         >
           Pay
         </button>
         <p className="text-red-500">{errorMessage}</p>
       </form>
+      <div>
+        <p className="text-green-400">{success}</p>
+        <p className="font-bold">{transecId}</p>
+      </div>
     </div>
   );
 };
