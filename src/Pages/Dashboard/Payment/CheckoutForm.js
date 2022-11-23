@@ -7,6 +7,19 @@ const CheckoutForm = ({ booking }) => {
   const stripe = useStripe();
   const elements = useElements();
   const { price, patient, email } = booking;
+  useEffect(() => {
+    // Create PaymentIntent as soon as the page loads
+    fetch("http://localhost:5000/create-payment-intent", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({ price }),
+    })
+      .then((res) => res.json())
+      .then((data) => setClientSecret(data.clientSecret));
+  }, [price]);
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!stripe || !elements) {
@@ -29,8 +42,8 @@ const CheckoutForm = ({ booking }) => {
     } else {
       setErrorMessage("");
     }
-    const { paymentIntent, error: confirmError } = await stripe
-      .confirmCardPayment(clientSecret, {
+    const { paymentIntent, error: confirmError } =
+      await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: card,
           billing_details: {
@@ -38,25 +51,15 @@ const CheckoutForm = ({ booking }) => {
             email: email,
           },
         },
-      })
-      .then(function (result) {
-        // Handle result.error or result.paymentIntent
       });
+
+    if (confirmError) {
+      setErrorMessage(confirmError.message);
+      return;
+    }
+    console.log(paymentIntent);
   };
 
-  useEffect(() => {
-    // Create PaymentIntent as soon as the page loads
-    fetch("http://localhost:5000/create-payment-intent", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({ price }),
-    })
-      .then((res) => res.json())
-      .then((data) => setClientSecret(data.clientSecret));
-  }, [price]);
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -76,7 +79,11 @@ const CheckoutForm = ({ booking }) => {
             },
           }}
         />
-        <button type="submit" disabled={!stripe || !clientSecret}>
+        <button
+          className="btn btn-primary"
+          type="submit"
+          disabled={!stripe || !clientSecret}
+        >
           Pay
         </button>
         <p className="text-red-500">{errorMessage}</p>
